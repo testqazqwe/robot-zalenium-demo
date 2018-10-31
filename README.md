@@ -29,3 +29,4 @@ ROBOT_ARGS="-v BROWSER:firefox -v SELENIUM_SPEED:2" docker-compose up robot
 ```
 docker-compose down
 ```
+

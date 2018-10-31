@@ -1,0 +1,9 @@
+name: server
+version: 0.0.1
+description: Chart for server
+keywords:
+  - qa
+maintainers:
+  - name: opsguru
+    email: anton@opsguru.com
+engine: gotpl

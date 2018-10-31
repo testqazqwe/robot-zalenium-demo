@@ -1,0 +1,11 @@
+image:
+  repo: 607634480372.dkr.ecr.eu-west-1.amazonaws.com/wobi-robot
+  tag: latest
+  imagePullPolicy: Always
+
+config:
+  selenium_url: http://zalenium:4444
+  selenium_speed: 1
+  server_url: http://server:7272
+  browser: 'chrome'
+  tests_path: './robot/tests'

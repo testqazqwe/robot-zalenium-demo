@@ -1,0 +1,4 @@
+image:
+  repo: 607634480372.dkr.ecr.eu-west-1.amazonaws.com/wobi-server
+  tag: latest
+  imagePullPolicy: Always

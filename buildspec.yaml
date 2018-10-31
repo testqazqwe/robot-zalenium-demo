@@ -1,0 +1,43 @@
+version: 0.2
+
+env:
+  variables:
+    version: "1.3"
+    helm_version: "v2.11.0"
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - sudo apt-get update
+      - sudo apt-get install docker python3-pip jq gawk curl -y
+      - sudo pip3 install --upgrade awscli
+      - curl -O https://storage.googleapis.com/kubernetes-helm/helm-$helm_version-linux-amd64.tar.gz
+      - tar -xzf helm-$helm_version-linux-amd64.tar.gz
+      - sudo mv ./linux-amd64/helm /bin/
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+      - helm lint ./helm/robot/
+      - helm init --client-only --skip-refresh
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+  build:
+    commands:
+      - echo Entered the build phase...
+      - bash ./build.sh
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - sed "s/VERSION/$version/g" appspec.yml -i
+      - sed "s/VERSION/$version/g" deploy.sh   -i
+      - chmod +x deploy.sh
+      - helm package --version $version ./helm/robot/
+      - helm package --version $version ./helm/server/
+
+artifacts:
+  files:
+    - robot-$version.tgz
+    - server-$version.tgz
+    - deploy.sh
+    - appspec.yml
+  discard-paths: yes

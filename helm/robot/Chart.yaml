@@ -1,0 +1,9 @@
+name: robot
+version: 0.0.1
+description: Chart for demo testing deployment
+keywords:
+  - qa
+maintainers:
+  - name: opsguru
+    email: anton@opsguru.com
+engine: gotpl

@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+#files:
+#  - source: robot-VERSION.tgz
+#    destination: /opt/
+#  - source: deploy.sh
+#    destination: /opt/
+hooks:
+  BeforeInstall:
+    - location: deploy.sh
+      timeout: 300
+      runas: ec2-user

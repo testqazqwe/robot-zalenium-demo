@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ $.Release.Namespace }}
+data:
+  variables.py: |
+    SELENIUM_URL = '{{ .Values.config.selenium_url }}/wd/hub'
+    SELENIUM_SPEED = {{ .Values.config.selenium_speed }}
+    SERVER_URL = '{{ .Values.config.server_url }}'
+    BROWSER = '{{ .Values.config.browser }}'
+    SCREEN_WIDTH = 1920
+    SCREEN_HEIGHT = 1080

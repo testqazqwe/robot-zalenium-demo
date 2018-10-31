@@ -1,0 +1,35 @@
+version: '2'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: resources/docker/server/Dockerfile
+
+  zalenium:
+    image: dosel/zalenium:3
+    ports:
+      - "4444:4444"
+    volumes:
+      - /usr/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/videos:/home/seluser/videos
+    command: ["start",
+              "--screenWidth", "1920",
+              "--screenHeight", "1080",
+              "--chromeContainers", "0",
+              "--firefoxContainers", "0"]
+
+  robot:
+    build:
+      context: .
+      dockerfile: resources/docker/robot/Dockerfile
+    depends_on:
+      - server
+      - zalenium
+    environment:
+      - SELENIUM_URL=http://zalenium:4444
+      - ROBOT_ARGS
+    volumes:
+      - ./test/robot:/home/robot/test/robot
+      - ./test/logs:/home/robot/test/logs
+      - ./test/variables.py:/home/robot/test/variables.py

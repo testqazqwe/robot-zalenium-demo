@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}-4
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ template "chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}-app
+        release: "{{ .Release.Name }}"
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-zalenium
+        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        command: ['./wait-for-selenium.sh', '{{ .Values.config.selenium_url }}']
+      containers:
+      - name: robot
+        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        command: ['./run_tests.sh']
+        volumeMounts:
+        - mountPath: /home/robot/test/logs
+          name: logs
+        - mountPath: /home/robot/test/variables.py
+          name: config
+          subPath: variables.py
+        env:
+        - name: TESTS_PATH
+          value: "{{ .Values.config.tests_path }}"
+        - name: SELENIUM_URL
+          value: "{{ .Values.config.selenium_url }}"
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
